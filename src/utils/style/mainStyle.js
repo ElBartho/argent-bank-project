@@ -1,0 +1,4 @@
+export const colors = {
+  primary: '#42b983',
+  secondary: '#2c3e50',
+};
