@@ -20,7 +20,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [togglePassword, setTogglePassword] = useState(false);
   const [isRemember, setIsRemember] = useState(
-    localStorage.getItem('remember')
+    localStorage.getItem('email') ? true : false
   );
   const [error, setError] = useState({
     email: '',
@@ -29,27 +29,49 @@ const Login = () => {
   });
 
   useEffect(() => {
-    if (user.authenticationFailed) {
-      setError({ ...error, credentials: 'Wrong email or password' });
+    if (user.isLoggedIn) {
+      dispatch(getProfile(user.data.token));
+      localStorage.setItem('token', user.data.token);
+      localStorage.setItem('tokenExpiration', Date.now() + 3600 * 4000);
     }
-  }, [error, user.authenticationFailed]);
+  }, [dispatch, navigate, user.isLoggedIn, user.data]);
 
   useEffect(() => {
     const storageToken = localStorage.getItem('token');
     const storageTokenExpiration = localStorage.getItem('tokenExpiration');
-    if (user.isLoggedIn) {
-      dispatch(getProfile(user.data.token));
-      if (isRemember) {
-        localStorage.setItem('token', user.data.token);
-      }
-    }
-  }, [dispatch, navigate, user, isRemember]);
+    const tokenExpired = parseInt(storageTokenExpiration) < Date.now();
+    console.log('deuxieme useEffect');
+    console.log('Profile Data => ', profile.data);
 
-  useEffect(() => {
-    if (profile.data) {
+    if (tokenExpired) {
+      localStorage.removeItem('storageToken');
+      localStorage.removeItem('storageTokenExpiration ');
+    }
+    if (storageToken && !tokenExpired && profile.data === null) {
+      console.log('deuxieme useEffect premier if');
+      dispatch(getProfile(storageToken));
+    }
+    if (profile.data && storageToken) {
       navigate(`/profile/${profile.data.id}`);
     }
-  }, [navigate, profile]);
+  }, [dispatch, navigate, profile.data]);
+
+  // useEffect(() => {
+  //   if (user.data) {
+  //     const token = user?.data.token;
+  //     dispatch(getProfile(token));
+  //   }
+  //   if (user.data && profile.data) {
+  //     navigate(`/profile/${profile.data.id}`);
+  //     form.current.reset();
+  //   }
+  // }, [dispatch, navigate, profile.data, user.data, user.profile]);
+
+  useEffect(() => {
+    if (user.authenticationFailed) {
+      setError({ ...error, credentials: 'Wrong email or password' });
+    }
+  }, [error, user.authenticationFailed]);
 
   const handleForm = (event) => {
     const err = { email: '', password: '' };
@@ -84,7 +106,6 @@ const Login = () => {
           localStorage.removeItem('email');
           localStorage.removeItem('password');
         })();
-    localStorage.setItem('remember', isRemember);
     dispatch(getUser(data));
     setError({ email: '', password: '', credentials: '' });
   };
@@ -129,8 +150,8 @@ const Login = () => {
             <input
               type='checkbox'
               id='remember-me'
-              defaultChecked={localStorage.getItem('remember')}
-              onChange={() => setIsRemember((prev) => !prev)}
+              onClick={() => setIsRemember((prev) => !prev)}
+              defaultChecked={isRemember}
             ></input>
             <label htmlFor='remember-me'>Remember Me</label>
           </RemenberWrapper>

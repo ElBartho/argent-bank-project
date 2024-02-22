@@ -2,6 +2,7 @@ import {
   GET_USER_APPROVED,
   GET_USER_REJECTED,
   LOG_OUT,
+  REFRESH_USER_DATA,
 } from '../actions/user.actions';
 
 const initialState = {

@@ -20,6 +20,12 @@ export const getUser = (data) => {
   };
 };
 
+export const refreshUserData = (data) => {
+  return (dispatch) => {
+    dispatch({ type: GET_USER_APPROVED, payload: data });
+  };
+};
+
 export const logOut = () => {
   return (dispatch) => {
     dispatch({ type: LOG_OUT });
