@@ -32,6 +32,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-// Est-ce que je dois refaire un get du user meme si j'ai le token ?
-// ou du moins refresh le isloggedIn dans le state ?

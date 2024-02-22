@@ -40,32 +40,18 @@ const Login = () => {
     const storageToken = localStorage.getItem('token');
     const storageTokenExpiration = localStorage.getItem('tokenExpiration');
     const tokenExpired = parseInt(storageTokenExpiration) < Date.now();
-    console.log('deuxieme useEffect');
-    console.log('Profile Data => ', profile.data);
 
     if (tokenExpired) {
       localStorage.removeItem('storageToken');
       localStorage.removeItem('storageTokenExpiration ');
     }
     if (storageToken && !tokenExpired && profile.data === null) {
-      console.log('deuxieme useEffect premier if');
       dispatch(getProfile(storageToken));
     }
     if (profile.data && storageToken) {
       navigate(`/profile/${profile.data.id}`);
     }
   }, [dispatch, navigate, profile.data]);
-
-  // useEffect(() => {
-  //   if (user.data) {
-  //     const token = user?.data.token;
-  //     dispatch(getProfile(token));
-  //   }
-  //   if (user.data && profile.data) {
-  //     navigate(`/profile/${profile.data.id}`);
-  //     form.current.reset();
-  //   }
-  // }, [dispatch, navigate, profile.data, user.data, user.profile]);
 
   useEffect(() => {
     if (user.authenticationFailed) {
