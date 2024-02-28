@@ -21,6 +21,13 @@ const userReducer = (state = initialState, action) => {
       };
     case GET_USER_REJECTED:
       return { ...state, authenticationFailed: true };
+    case REFRESH_USER_DATA:
+      return {
+        ...state,
+        data: action.payload.body,
+        isLoggedIn: true,
+        authenticationFailed: false,
+      };
     case LOG_OUT:
       return {
         ...state,

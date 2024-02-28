@@ -7,20 +7,42 @@ import {
   IconLinkWrapper,
 } from './header';
 import Icon from '../Icon';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../../actions/user.actions';
+import { useEffect } from 'react';
+import { getProfile } from '../../actions/profile.actions';
+import { refreshUserData } from '../../actions/user.actions';
 
 const Header = () => {
   const user = useSelector((state) => state.userReducer);
   const profile = useSelector((state) => state.profileReducer);
   const dispatch = useDispatch();
+  const storageToken = localStorage.getItem('token');
+  const isTokenExpired = () => {
+    const storageTokenExpiration = localStorage.getItem('tokenExpiration');
+    if (!storageTokenExpiration) return true;
+    return Date.now() > parseInt(storageTokenExpiration);
+  };
+
+  useEffect(() => {
+    if (!isTokenExpired()) {
+      dispatch(refreshUserData({ body: { token: storageToken } }));
+      dispatch(getProfile(storageToken));
+    }
+  }, [dispatch, storageToken]);
+
+  const cleanBeforeLogOut = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiration');
+    dispatch(logOut());
+  };
 
   return (
     <NavWrapper>
-      <NavLink to='/'>
+      <Link to='/'>
         <HomeLogo src={Logo} alt='Argent Bank Logo' />
-      </NavLink>
+      </Link>
       <LinkWrapper>
         {user.isLoggedIn && profile.data && (
           <IconLinkWrapper>
@@ -33,7 +55,7 @@ const Header = () => {
         {user.isLoggedIn ? (
           <IconLinkWrapper>
             <Icon title='Sign Out Icon' />
-            <StyledNavLink to='/' onClick={() => dispatch(logOut())}>
+            <StyledNavLink to='/' onClick={() => cleanBeforeLogOut()}>
               Sign out
             </StyledNavLink>
           </IconLinkWrapper>

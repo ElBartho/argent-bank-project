@@ -15,7 +15,7 @@ export const ContentSection = styled.section`
   box-sizing: border-box;
   background-color: white;
   width: 300px;
-  height: 400px;
+  height: 380px;
   margin: 0 auto;
   margin-top: 3rem;
   padding: 2rem;
@@ -23,17 +23,6 @@ export const ContentSection = styled.section`
     display: flex;
     flex-direction: column;
   }
-`;
-
-export const SignInButton = styled.button`
-  display: block;
-  padding: 8px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-top: 1rem;
-  border-color: #00bc77;
-  background-color: #00bc77;
-  color: #fff;
 `;
 
 export const InputWrapper = styled.div`

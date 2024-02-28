@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 export const AccountSection = styled.section`
   display: flex;
@@ -40,3 +41,20 @@ export const AccountAmount = styled.p`
 export const AccountAmountDescription = styled.p`
   margin: 0;
 `;
+
+export const StyledNavLink = styled(Link)`
+  width: 100%;
+  text-decoration: none;
+  @media (min-width: 920px) {
+    width: auto;
+  }
+`;
+
+// @media (min-width: 720px) {
+//   .account-content-wrapper.cta {
+//     flex: 0;
+//   }
+
+//   .transaction-button {
+//     width: 200px;
+//   }

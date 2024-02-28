@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const NavWrapper = styled.nav`
@@ -20,9 +20,10 @@ export const LinkWrapper = styled.div`
   gap: 10px;
 `;
 
-export const StyledNavLink = styled(NavLink)`
+export const StyledNavLink = styled(Link)`
   text-decoration: none;
   font-weight: bold;
+  color: #2c3e50;
   &:hover {
     text-decoration: underline;
   }

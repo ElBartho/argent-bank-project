@@ -1,7 +1,6 @@
 import {
   Main,
   ContentSection,
-  SignInButton,
   InputWrapper,
   RemenberWrapper,
   ValidationError,
@@ -12,17 +11,20 @@ import { getProfile } from '../../actions/profile.actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import Button from '../../components/Button';
 
 const Login = () => {
   const user = useSelector((state) => state.userReducer);
   const profile = useSelector((state) => state.profileReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [togglePassword, setTogglePassword] = useState(false);
-  const [isRemember, setIsRemember] = useState(
+  const email = localStorage.getItem('email');
+  const password = localStorage.getItem('password');
+  const [canSeePassword, setCanSeePassword] = useState(false);
+  const [canRememberCredentials, setCanRememberCredentials] = useState(
     localStorage.getItem('email') ? true : false
   );
-  const [error, setError] = useState({
+  const [errorMessage, setErrorMessage] = useState({
     email: '',
     password: '',
     credentials: '',
@@ -55,45 +57,52 @@ const Login = () => {
 
   useEffect(() => {
     if (user.authenticationFailed) {
-      setError({ ...error, credentials: 'Wrong email or password' });
+      setErrorMessage({
+        ...errorMessage,
+        credentials: 'Wrong email or password',
+      });
     }
-  }, [error, user.authenticationFailed]);
+  }, [errorMessage, user.authenticationFailed]);
+
+  const isEmail = (email) => {
+    return !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email);
+  };
 
   const handleForm = (event) => {
+    event.preventDefault();
     const err = { email: '', password: '' };
     const data = {
       email: event.target[0].value,
       password: event.target[1].value,
     };
-    event.preventDefault();
 
     if (data.email === '') {
       err.email = 'Please enter your email';
-    } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(data.email)) {
+    } else if (isEmail(data.email)) {
       err.email = 'Please enter a valid email';
     }
     if (data.password === '') {
       err.password = 'Please enter your password';
     }
     if (err.email !== '' || err.password !== '') {
-      setError({ ...error, email: err.email, password: err.password });
+      setErrorMessage((prev) => ({
+        ...prev,
+        email: err.email,
+        password: err.password,
+      }));
       return;
     }
-    isRemember
+    canRememberCredentials
       ? (() => {
           localStorage.setItem('email', data.email);
           localStorage.setItem('password', data.password);
-          localStorage.setItem('user', {
-            email: data.email,
-            password: data.password,
-          });
         })()
       : (() => {
           localStorage.removeItem('email');
           localStorage.removeItem('password');
         })();
     dispatch(getUser(data));
-    setError({ email: '', password: '', credentials: '' });
+    setErrorMessage({ email: '', password: '', credentials: '' });
   };
 
   return (
@@ -102,46 +111,53 @@ const Login = () => {
         <Icon title='User Icon' />
         <h1>Sign In</h1>
         <form onSubmit={(event) => handleForm(event)}>
-          <ValidationError>{error.credentials}</ValidationError>
+          <ValidationError>{errorMessage.credentials}</ValidationError>
           <InputWrapper>
             <label htmlFor='email'>Username</label>
-            <input
-              type='text'
-              id='email'
-              defaultValue={localStorage.getItem('email')}
-            ></input>
-            <ValidationError>{error.email}</ValidationError>
+            <input type='text' id='email' defaultValue={email} />
+            <ValidationError>{errorMessage.email}</ValidationError>
           </InputWrapper>
           <InputWrapper>
             <label htmlFor='password'>Password</label>
             <input
-              type={togglePassword ? 'text' : 'password'}
+              type={canSeePassword ? 'text' : 'password'}
               id='password'
-              defaultValue={localStorage.getItem('password')}
-            ></input>
+              defaultValue={password}
+            />
             <i
-              className={togglePassword ? 'far fa-eye-slash' : 'far fa-eye'}
-              onClick={() => setTogglePassword((prev) => !prev)}
+              className={canSeePassword ? 'far fa-eye-slash' : 'far fa-eye'}
+              onClick={() => setCanSeePassword((prev) => !prev)}
               style={{
                 cursor: 'pointer',
                 top: '33px',
-                left: '212px',
+                // left: '212px',
+                right: '6px',
                 position: 'absolute',
                 opacity: '75%',
               }}
             ></i>
-            <ValidationError>{error.password}</ValidationError>
+            <ValidationError>{errorMessage.password}</ValidationError>
           </InputWrapper>
           <RemenberWrapper>
             <input
               type='checkbox'
               id='remember-me'
-              onClick={() => setIsRemember((prev) => !prev)}
-              defaultChecked={isRemember}
-            ></input>
+              onClick={() => setCanRememberCredentials((prev) => !prev)}
+              defaultChecked={canRememberCredentials}
+            />
             <label htmlFor='remember-me'>Remember Me</label>
           </RemenberWrapper>
-          <SignInButton type='submit'>Sign In</SignInButton>
+          <Button
+            text='Sign In'
+            type='submit'
+            cursor='pointer'
+            padding='8px'
+            fontSize='1.1rem'
+            margin='1rem 0 0 0'
+            textColor='#fff'
+            borderColor='#00bc77'
+            backgroundColor='#00bc77'
+          />
         </form>
       </ContentSection>
     </Main>

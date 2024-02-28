@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export const GET_USER_APPROVED = 'GET_USER_APPROVED';
 export const GET_USER_REJECTED = 'GET_USER_REJECTED';
+export const REFRESH_USER_DATA = 'REFRESH_USER_DATA';
 export const LOG_OUT = 'LOG_OUT';
 
 export const getUser = (data) => {
@@ -12,7 +13,6 @@ export const getUser = (data) => {
         data
       );
       dispatch({ type: GET_USER_APPROVED, payload: response.data });
-      console.log(response.data);
     } catch (error) {
       dispatch({ type: GET_USER_REJECTED });
       console.error('Error login: ', error);
@@ -22,7 +22,7 @@ export const getUser = (data) => {
 
 export const refreshUserData = (data) => {
   return (dispatch) => {
-    dispatch({ type: GET_USER_APPROVED, payload: data });
+    dispatch({ type: REFRESH_USER_DATA, payload: data });
   };
 };
 

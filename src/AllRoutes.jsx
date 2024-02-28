@@ -13,7 +13,10 @@ const AllRoutes = () => {
       <Route path='/profile/:profileId' element={<Profile />} />
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
-      <Route path='/transaction' element={<Transaction />} />
+      <Route
+        path='/profile/:profileId/account/:accountId/transactions'
+        element={<Transaction />}
+      />
       <Route path='*' element={<Error />} />
     </Routes>
   );
