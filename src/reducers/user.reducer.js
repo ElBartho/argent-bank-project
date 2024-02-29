@@ -2,11 +2,12 @@ import {
   GET_USER_APPROVED,
   GET_USER_REJECTED,
   LOG_OUT,
-  REFRESH_USER_DATA,
+  REFRESH_USER_STATUS,
 } from '../actions/user.actions';
 
 const initialState = {
-  data: null,
+  token: localStorage.getItem('token'),
+  tokenExpiration: localStorage.getItem('tokenExpiration'),
   isLoggedIn: false,
   authenticationFailed: false,
 };
@@ -15,23 +16,22 @@ const userReducer = (state = initialState, action) => {
     case GET_USER_APPROVED:
       return {
         ...state,
-        data: action.payload.body,
+        token: action.payload,
         isLoggedIn: true,
         authenticationFailed: false,
       };
     case GET_USER_REJECTED:
       return { ...state, authenticationFailed: true };
-    case REFRESH_USER_DATA:
+    case REFRESH_USER_STATUS:
       return {
         ...state,
-        data: action.payload.body,
         isLoggedIn: true,
-        authenticationFailed: false,
       };
     case LOG_OUT:
       return {
         ...state,
-        data: null,
+        token: null,
+        tokenExpiration: null,
         isLoggedIn: false,
       };
     default:

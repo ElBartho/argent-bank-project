@@ -12,25 +12,24 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '../../actions/user.actions';
 import { useEffect } from 'react';
 import { getProfile } from '../../actions/profile.actions';
-import { refreshUserData } from '../../actions/user.actions';
+import { refreshUserStatus } from '../../actions/user.actions';
 
 const Header = () => {
   const user = useSelector((state) => state.userReducer);
   const profile = useSelector((state) => state.profileReducer);
   const dispatch = useDispatch();
-  const storageToken = localStorage.getItem('token');
-  const isTokenExpired = () => {
-    const storageTokenExpiration = localStorage.getItem('tokenExpiration');
-    if (!storageTokenExpiration) return true;
-    return Date.now() > parseInt(storageTokenExpiration);
-  };
 
   useEffect(() => {
+    const isTokenExpired = () => {
+      if (!user.tokenExpiration) return true;
+      return Date.now() > parseInt(user.tokenExpiration);
+    };
+
     if (!isTokenExpired()) {
-      dispatch(refreshUserData({ body: { token: storageToken } }));
-      dispatch(getProfile(storageToken));
+      dispatch(refreshUserStatus());
+      dispatch(getProfile(user.token));
     }
-  }, [dispatch, storageToken]);
+  }, [dispatch, user.token, user.tokenExpiration]);
 
   const cleanBeforeLogOut = () => {
     localStorage.removeItem('token');

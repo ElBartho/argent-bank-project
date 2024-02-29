@@ -16,7 +16,6 @@ import { InputWrapper } from '../Login/login';
 const Profile = () => {
   const user = useSelector((state) => state.userReducer);
   const profile = useSelector((state) => state.profileReducer);
-  const form = useRef();
   const dispatch = useDispatch();
   const [canEditProfile, setCanEditProfile] = useState(false);
   const [errorMessage, setErrorMessage] = useState({
@@ -90,7 +89,7 @@ const Profile = () => {
       }));
       return;
     }
-    dispatch(updateProfile(user.data.token, data));
+    dispatch(updateProfile(user.token, data));
     setCanEditProfile((prev) => !prev);
   };
 
@@ -101,7 +100,7 @@ const Profile = () => {
           {canEditProfile ? (
             <EditFormWrapper>
               <h1>Welcome back</h1>
-              <form ref={form} onSubmit={(event) => editFormHandle(event)}>
+              <form onSubmit={(event) => editFormHandle(event)}>
                 <DuoContainer>
                   <InputWrapper>
                     <input type='text' defaultValue={profile.data.firstName} />

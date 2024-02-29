@@ -32,28 +32,28 @@ const Login = () => {
 
   useEffect(() => {
     if (user.isLoggedIn) {
-      dispatch(getProfile(user.data.token));
-      localStorage.setItem('token', user.data.token);
+      dispatch(getProfile(user.token));
+      localStorage.setItem('token', user.token);
       localStorage.setItem('tokenExpiration', Date.now() + 3600 * 4000);
     }
-  }, [dispatch, navigate, user.isLoggedIn, user.data]);
+  }, [dispatch, navigate, user.isLoggedIn, user.token]);
 
   useEffect(() => {
-    const storageToken = localStorage.getItem('token');
-    const storageTokenExpiration = localStorage.getItem('tokenExpiration');
-    const tokenExpired = parseInt(storageTokenExpiration) < Date.now();
+    // const storageToken = localStorage.getItem('token');
+    // const storageTokenExpiration = localStorage.getItem('tokenExpiration');
+    // const tokenExpired = parseInt(storageTokenExpiration) < Date.now();
 
-    if (tokenExpired) {
-      localStorage.removeItem('storageToken');
-      localStorage.removeItem('storageTokenExpiration ');
-    }
-    if (storageToken && !tokenExpired && profile.data === null) {
-      dispatch(getProfile(storageToken));
-    }
-    if (profile.data && storageToken) {
+    // if (tokenExpired) {
+    //   localStorage.removeItem('storageToken');
+    //   localStorage.removeItem('storageTokenExpiration ');
+    // }
+    // if (storageToken && !tokenExpired && profile.data === null) {
+    //   dispatch(getProfile(storageToken));
+    // }
+    if (profile.data) {
       navigate(`/profile/${profile.data.id}`);
     }
-  }, [dispatch, navigate, profile.data]);
+  }, [navigate, profile.data]);
 
   useEffect(() => {
     if (user.authenticationFailed) {
@@ -130,7 +130,6 @@ const Login = () => {
               style={{
                 cursor: 'pointer',
                 top: '33px',
-                // left: '212px',
                 right: '6px',
                 position: 'absolute',
                 opacity: '75%',
