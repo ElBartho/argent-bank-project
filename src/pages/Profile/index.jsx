@@ -23,9 +23,8 @@ const Profile = () => {
     lastNameError: '',
   });
   const isTokenExpired = () => {
-    const storageTokenExpiration = localStorage.getItem('tokenExpiration');
-    if (!storageTokenExpiration) return true;
-    return Date.now() > parseInt(storageTokenExpiration);
+    if (!user.tokenExpiration) return true;
+    return Date.now() > parseInt(user.tokenExpiration);
   };
   const accounts = [
     {

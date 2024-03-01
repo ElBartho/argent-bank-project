@@ -12,6 +12,7 @@ export const getUser = (data) => {
         'http://localhost:3001/api/v1/user/login',
         data
       );
+      console.log(response);
       dispatch({ type: GET_USER_APPROVED, payload: response.data.body.token });
     } catch (error) {
       dispatch({ type: GET_USER_REJECTED });
